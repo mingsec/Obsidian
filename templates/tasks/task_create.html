@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>新增任务</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+               
+        <div class="card">
+            <div class="card-header">任务基本信息</div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name != 'task_id' %}  <!-- 跳过task_id字段 -->
+                    <div class="form-group mb-3">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">任务协作信息</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_project">所属项目 *</label>
+                            {{ form.project }}
+                            {% if form.project.errors %}
+                            <div class="text-danger">{{ form.project.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_executor">执行人</label>
+                            {{ form.executor }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 其他协作字段 -->
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

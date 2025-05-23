@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>任务列表</h2>
+    
+    <!-- 筛选表单 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="proposer">提出人</label>
+                        <input type="text" name="proposer" class="form-control" value="{{ request.GET.proposer }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="project">所属项目</label>
+                        <input type="text" name="project" class="form-control" value="{{ request.GET.project }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="parent_task">父任务</label>
+                        <input type="text" name="parent_task" class="form-control" value="{{ request.GET.parent_task }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="priority">优先级</label>
+                        <select name="priority" class="form-control">
+                            <option value="">全部</option>
+                            <option value="P0" {% if request.GET.priority == 'P0' %}selected{% endif %}>P0</option>
+                            <option value="P1" {% if request.GET.priority == 'P1' %}selected{% endif %}>P1</option>
+                            <option value="P2" {% if request.GET.priority == 'P2' %}selected{% endif %}>P2</option>
+                            <option value="P3" {% if request.GET.priority == 'P3' %}selected{% endif %}>P3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="status">任务状态</label>
+                        <select name="status" class="form-control">
+                            <option value="">全部</option>
+                            <option value="PENDING" {% if request.GET.status == 'PENDING' %}selected{% endif %}>待开始</option>
+                            <option value="IN_PROGRESS" {% if request.GET.status == 'IN_PROGRESS' %}selected{% endif %}>进行中</option>
+                            <option value="ON_HOLD" {% if request.GET.status == 'ON_HOLD' %}selected{% endif %}>已暂缓</option>
+                            <option value="CLOSED" {% if request.GET.status == 'CLOSED' %}selected{% endif %}>已关闭</option>
+                            <option value="CANCELLED" {% if request.GET.status == 'CANCELLED' %}selected{% endif %}>已取消</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">筛选</button>
+                        <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary ml-2">重置</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 新增按钮 -->
+    <div class="mb-3">
+        <a href="{% url 'tasks:task_create' %}" class="btn btn-success">新增任务</a>
+    </div>
+    
+    <!-- 任务表格 -->
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>任务编号</th>
+                <th>任务名称</th>
+                <th>提出人</th>
+                <th>所属项目</th>
+                <th>优先级</th>
+                <th>状态</th>
+                <th>期望完成日期</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td><a href="{% url 'tasks:task_update' task.pk %}">{{ task.task_id }}</a></td>
+                <td><a href="{% url 'tasks:task_update' task.pk %}">{{ task.name }}</a></td>
+                <td>{{ task.proposer }}</td>
+                <td>{{ task.project }}</td>
+                <td>{{ task.get_priority_display }}</td>
+                <td>{{ task.get_status_display }}</td>
+                <td>{{ task.expected_completion_date|date:"Y-m-d" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">暂无任务数据</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- 分页 -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">上一页</a></li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
