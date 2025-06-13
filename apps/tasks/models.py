@@ -61,7 +61,7 @@ class Task(models.Model):
     
     # 基本信息
     name = models.CharField('任务名称', max_length=30, null=False, blank=False)
-    proposer = models.CharField('提出者', max_length=5, null=False, blank=False)
+    proposer = models.CharField('提出者', max_length=5, null=False, blank=False, db_index=True)
     proposed_date = models.DateTimeField('提出日期', default=timezone.now, null=False, blank=False)
     details = models.TextField('任务详情', blank=True, null=True)
     expected_completion_date = models.DateField('期望完成日期', null=False, blank=False)
@@ -84,12 +84,7 @@ class Task(models.Model):
     
     def __str__(self):
         return f"{self.task_id} - {self.name}"
-    
-    def clean(self):
-        # 验证期望完成日期不小于提出日期
-        if self.expected_completion_date and self.proposed_date:
-            raise ValidationError({'expected_completion_date': '期望完成日期不能小于提出日期'})
-    
+        
     def save(self, *args, **kwargs):
         # 自动生成任务编号（如果新建）
         if not self.task_id:

@@ -1,110 +1,92 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
 
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-plus-circle me-2"></i>创建新任务</h2>
+        <h2 class="h4 text-gray-800">
+            <i class="bi bi-plus-circle me-2"></i>创建新任务
+        </h2>
         <a href="{% url 'tasks:task_list' %}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i>返回列表
         </a>
     </div>
     
-    <form method="post" novalidate>
-        {% csrf_token %}
-        
-        <!-- 基本信息 -->
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>基本信息</h5>
+    <div class="card shadow">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <!-- 基本信息 -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="bi bi-info-circle me-1"></i>基本信息
+                </h6>
             </div>
             <div class="card-body">
-                <div class="row g-3">
+                <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label required-field">任务名称</label>
-                        {{ form.name }}
-                        {% if form.name.errors %}
-                        <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
-                        {% endif %}
+                        {% bootstrap_field form.name label_class="required-label" %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label required-field">提出人</label>
-                        {{ form.proposer }}
-                        {% if form.proposer.errors %}
-                        <div class="invalid-feedback d-block">{{ form.proposer.errors }}</div>
-                        {% endif %}
+                        {% bootstrap_field form.proposer label_class="required-label" %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">提出日期</label>
-                        {{ form.proposed_date }}
+                        {% bootstrap_field form.proposed_date %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">期望完成日期</label>
-                        {{ form.expected_completion_date }}
-                        {% if form.expected_completion_date.errors %}
-                        <div class="invalid-feedback d-block">{{ form.expected_completion_date.errors }}</div>
-                        {% endif %}
+                        {% bootstrap_field form.expected_completion_date %}
                     </div>
                     <div class="col-12">
-                        <label class="form-label">任务详细说明</label>
-                        {{ form.details }}
+                        {% bootstrap_field form.details %}
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- 协作信息 -->
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0"><i class="bi bi-people me-2"></i>协作信息</h5>
+            
+            <!-- 协作信息 -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="bi bi-people me-1"></i>协作信息
+                </h6>
             </div>
             <div class="card-body">
-                <div class="row g-3">
+                <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label required-field">所属项目</label>
-                        {{ form.project }}
-                        {% if form.project.errors %}
-                        <div class="invalid-feedback d-block">{{ form.project.errors }}</div>
-                        {% endif %}
+                        {% bootstrap_field form.project label_class="required-label" %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">执行人</label>
-                        {{ form.executor }}
+                        {% bootstrap_field form.executor %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">关联需求/风险编码</label>
-                        {{ form.related_code }}
+                        {% bootstrap_field form.related_code %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">关联需求/风险名称</label>
-                        {{ form.related_name }}
+                        {% bootstrap_field form.related_name %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">父任务</label>
-                        {{ form.parent_task }}
+                        {% bootstrap_field form.parent_task %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">参与人</label>
-                        {{ form.participants }}
+                        {% bootstrap_field form.participants %}
                         <small class="text-muted">多个参与人用逗号分隔</small>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">任务状态</label>
-                        {{ form.status }}
+                        {% bootstrap_field form.status %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">优先级</label>
-                        {{ form.priority }}
+                        {% bootstrap_field form.priority %}
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-check-circle me-1"></i>保存
-            </button>
-            <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary px-4">取消</a>
-        </div>
-    </form>
+            
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-circle me-1"></i>保存
+                    </button>
+                    <a href="{% url 'tasks:task_list' %}" class="btn btn-outline-secondary px-4 ms-2">取消</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

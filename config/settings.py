@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 注册第三方应用
+    'bootstrap5',
     # 注册自定义应用
     'apps.requirements',
     'apps.tasks',
@@ -57,14 +59,40 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# 添加模板目录
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+# Bootstrap5 设置
+BOOTSTRAP5 = {
+    "css_url": {
+        "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "integrity": "sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM",
+        "crossorigin": "anonymous",
     },
-]
+    "javascript_url": {
+        "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
+        "integrity": "sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz",
+        "crossorigin": "anonymous",
+    },
+    "theme_url": None,
+    "javascript_in_head": False,
+    "wrapper_class": "mb-3",
+    "horizontal_label_class": "col-md-2",
+    "horizontal_field_class": "col-md-10",
+    "set_placeholder": True,
+    "required_css_class": "",
+    "error_css_class": "is-invalid",
+    "success_css_class": "is-valid",
+    "formset_renderers": {
+        "default": "bootstrap5.renderers.FormsetRenderer",
+    },
+    "form_renderers": {
+        "default": "bootstrap5.renderers.FormRenderer",
+    },
+    "field_renderers": {
+        "default": "bootstrap5.renderers.FieldRenderer",
+        "inline": "bootstrap5.renderers.InlineFieldRenderer",
+    },
+}
 
+# 添加模板目录
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -82,10 +110,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -96,7 +122,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -115,7 +140,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 #修改语言'en-us'为中文'zh-hans'
 LANGUAGE_CODE = 'zh-hans'   
 

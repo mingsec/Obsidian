@@ -1,15 +1,18 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
 
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-plus-circle me-2"></i>填报进度 - {{ task.task_id }}</h2>
+        <h2 class="h4 text-gray-800">
+            <i class="bi bi-plus-circle me-2"></i>填报进度 - {{ task.task_id }}
+        </h2>
         <a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i>返回详情
         </a>
     </div>
     
-    <div class="card">
+    <div class="card shadow">
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
@@ -19,15 +22,25 @@
                     <div class="border rounded p-3 bg-light">
                         <div class="row">
                             <div class="col-md-4">
-                                <label class="form-label text-muted">任务名称</label>
-                                <p>{{ task.name }}</p>
+                                <label class="form-label text-muted small mb-1">任务名称</label>
+                                <p class="fw-bold">{{ task.name }}</p>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label text-muted">当前状态</label>
-                                <p>{{ task.get_status_display }}</p>
+                                <label class="form-label text-muted small mb-1">当前状态</label>
+                                <p>
+                                    <span class="badge 
+                                        {% if task.status == 'PENDING' %}bg-secondary
+                                        {% elif task.status == 'IN_PROGRESS' %}bg-primary
+                                        {% elif task.status == 'ON_HOLD' %}bg-warning text-dark
+                                        {% elif task.status == 'CLOSED' %}bg-success
+                                        {% elif task.status == 'CANCELLED' %}bg-danger
+                                        {% endif %}">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </p>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label text-muted">最后更新时间</label>
+                                <label class="form-label text-muted small mb-1">最后更新时间</label>
                                 <p>{{ task.last_updated|date:"Y-m-d H:i" }}</p>
                             </div>
                         </div>
@@ -37,29 +50,23 @@
                 <div class="mb-4">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label">更新日期</label>
-                            <input type="text" class="form-control" value="{{ today|date:'Y-m-d' }}" readonly>
+                            {% bootstrap_field form.related_object_code %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">关联编码</label>
-                            <input type="text" class="form-control" value="{{ task.task_id }}" readonly>
+                            {% bootstrap_field form.update_date %}
                         </div>
                     </div>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label required-field">进度说明</label>
-                    {{ form.progress_description }}
-                    {% if form.progress_description.errors %}
-                    <div class="invalid-feedback d-block">{{ form.progress_description.errors }}</div>
-                    {% endif %}
+                    {% bootstrap_field form.progress_description %}
                 </div>
                 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary px-4">
                         <i class="bi bi-check-circle me-1"></i>保存进度
                     </button>
-                    <a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-secondary px-4">取消</a>
+                    <a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-outline-secondary px-4 ms-2">取消</a>
                 </div>
             </form>
         </div>

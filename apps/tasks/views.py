@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-# from django.views.generic import ListView
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
@@ -53,7 +52,7 @@ def task_list(request):
     # 分页处理 - 按项目分组分页
     page_size = 5  # 每页显示的项目组数
     paginator = Paginator(list(grouped_tasks.items()), page_size)
-    page = request.GET.get('page')   
+    page = request.GET.get('page')
     try:
         page_groups = paginator.page(page)
     except PageNotAnInteger:
@@ -62,7 +61,7 @@ def task_list(request):
         page_groups = paginator.page(paginator.num_pages)
 
     return render(request, 'tasks/task_list.html', {
-        'tasks': tasks,
+        'grouped_tasks': grouped_tasks,
         'proposers': proposers,
         'executors': executors,
         'projects': projects,
@@ -70,6 +69,7 @@ def task_list(request):
         'priorities': priorities,
         'filter_params': request.GET
     })
+
 
 def task_create(request):
     if request.method == 'POST':
@@ -88,6 +88,7 @@ def task_create(request):
     
     return render(request, 'tasks/task_create.html', {'form': form})
 
+
 def task_detail(request, pk):
     task = get_object_or_404(Task, pk=pk)
     progress_list = task.progress_trackings.all().order_by('-update_date')
@@ -98,6 +99,8 @@ def task_detail(request, pk):
             form.save()
             messages.success(request, '协作信息更新成功!')
             return redirect('tasks:task_detail', pk=task.pk)
+        else:
+            messages.error(request, '请修正以下错误')
     else:
         form = TaskUpdateForm(instance=task)
 
@@ -106,6 +109,7 @@ def task_detail(request, pk):
         'form': form,
         'progress_list': progress_list
     })
+
 
 def progress_create(request, task_pk):
     task = get_object_or_404(Task, pk=task_pk)
@@ -126,3 +130,24 @@ def progress_create(request, task_pk):
         'form': form,
         'task': task
     })
+
+
+def task_delete(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == 'POST':
+        task.delete()
+        messages.success(request, f'任务 "{task.name}" 已成功删除!')
+        return redirect('tasks:task_list')
+    return redirect('tasks:task_detail', pk=pk)
+
+
+def progress_delete(request, pk):
+    progress = get_object_or_404(ProgressTracking, pk=pk)
+    task_id = progress.task_id
+    
+    if request.method == 'POST':
+        progress.delete()
+        messages.success(request, '进度记录已成功删除!')
+        return redirect('tasks:task_detail', pk=task_id)
+    
+    return redirect('tasks:task_detail', pk=task_id)
