@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from bootstrap_datepicker_plus import DatePickerInput
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 from .models import Task, ProgressTracking
 
 class TaskForm(forms.ModelForm):
@@ -11,8 +11,8 @@ class TaskForm(forms.ModelForm):
             'executor', 'project', 'related_code','related_name', 'parent_task', 'participants', 'status', 'priority'
         ]
         widgets = {
-            'proposed_date': forms.DatePickerInput(format='%Y-%mm-%dd'),
-            'expected_completion_date': forms.DatePickerInput(format='%Y-%mm-%dd'),
+            'proposed_date': DatePickerInput(format='%Y-%mm-%dd'),
+            'expected_completion_date': DatePickerInput(format='%Y-%mm-%dd'),
             'details': forms.Textarea(attrs={'rows': 3}),
             'participants': forms.TextInput(attrs={'placeholder': '多个参与人用逗号分隔'}),
         }

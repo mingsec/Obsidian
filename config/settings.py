@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 注册第三方应用
     'bootstrap5',
+    'bootstrap_datepicker_plus',
     # 注册自定义应用
     'apps.requirements',
     'apps.tasks',
